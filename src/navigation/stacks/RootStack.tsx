@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator<RootStackParams>();
 const RootStack: FC = () => {
   return (
     <Stack.Navigator
-      // initialRouteName={'EstablishmentList'}
+      // initialRouteName={'PricingPlans'}
       screenOptions={{
         headerShown: false,
         gestureEnabled: false,

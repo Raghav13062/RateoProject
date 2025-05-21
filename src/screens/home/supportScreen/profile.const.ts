@@ -35,6 +35,26 @@ let drawerItems = [
     screenName: 'PrivacyPolicy',
   },
   {
+    icon: 'shield-checkmark-outline',
+    label: 'CreateEstablishment',
+    screenName: 'CreateEstablishment',
+  },
+  {
+    icon: 'people-outline',
+    label: 'EstablishmentList',
+    screenName: 'EstablishmentList',
+  },
+  {
+    icon: 'people-outline',
+    label: 'CompanyList',
+    screenName: 'CompanyList',
+  },
+  {
+    icon: 'people-outline',
+    label: 'PricingPlans',
+    screenName: 'PricingPlans',
+  },
+  {
     icon: 'log-out-outline',
     label: 'Logout',
     screenName: 'Logout',

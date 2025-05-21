@@ -90,8 +90,8 @@
 //     </View>
 //   );
 // };
-
 // export default MyAds;
+
 import React, {useState} from 'react';
 import {
   View,

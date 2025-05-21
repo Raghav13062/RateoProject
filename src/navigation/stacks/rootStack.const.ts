@@ -10,6 +10,8 @@ import Profile from '../../screens/home/profile/Profile';
 import PostAds from '../../screens/home/postAds/PostAds';
 import CreateEstablishment from '../../screens/home/createEstablishment/CreateEstablishment';
 import EstablishmentList from '../../screens/home/establishmentList/EstablishmentList';
+import CompanyList from '../../screens/home/company/CompanyList';
+import PricingPlans from '../../screens/home/pricingPlans/PricingPlans';
 
 export const stackScreens = [
   {name: 'SplashScreen', component: SplashScreen},
@@ -23,5 +25,7 @@ export const stackScreens = [
   {name: 'Profile', component: Profile},
   {name: 'PostAds', component: PostAds},
   {name: 'CreateEstablishment', component: CreateEstablishment},
+  {name: 'PricingPlans', component: PricingPlans},
+  {name: 'CompanyList', component: CompanyList},
   {name: 'EstablishmentList', component: EstablishmentList},
 ];
