@@ -12,4 +12,6 @@ export default {
   invalidCompanyName: 'Please enter valid Company Name.',
   invalidName: 'Please enter valid Name.',  
   invalidCity: 'Please enter valid City Name.',
+    requiredImage: 'Please upload an image.',
+
 };

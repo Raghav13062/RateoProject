@@ -52,6 +52,12 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 20,
   },
+  imageContainer: {},
+  imageStyle: {
+    height: 55,
+    width: 55,
+    borderRadius: 10,
+  },
 });
 
 export default styles;

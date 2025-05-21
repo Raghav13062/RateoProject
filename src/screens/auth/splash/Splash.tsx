@@ -20,7 +20,7 @@ const Splash: FC = () => {
       end={{x: 0, y: 1}}>
       <CustomStatusbar
         backgroundColor={color.secondaryBG}
-        barStyle="dark-content"
+        barStyle="light-content"
       />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Animatable.Image

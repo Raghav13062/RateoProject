@@ -11,15 +11,18 @@ import validationMessage from '../../../utility/validation/validationMessage';
 import axiosInstance from '../../../services/api';
 import constant from '../../../services/config/constant';
 import {Log} from '../../../utility/log';
-import {loginSuccess} from '../../../services/redux/userReducer/reducer';
 import {Toast} from '../../../utility/functions/toast';
+import {
+  getUserDetails,
+  loginSuccess,
+} from '../../../services/redux/userReducer/reducer';
 
 const useLogin = () => {
   const dispatch = useAppDispatch();
   const navigation = useAuthNavigation();
   const [userLogin, setUserLogin] = useState<UserLoginProps>({
-    email: 'company@gmail.com',
-    pass: 'company@123',
+    email: 'hello1@gmail.com',
+    pass: '123456',
     isLoading: false,
   });
   const [userLoginError, setUserLoginError] = useState<UserLoginErrorProps>({
@@ -55,11 +58,7 @@ const useLogin = () => {
       };
     } else {
       tempError = {};
-      // onLoginSubmit();
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'HomeBottomTabs'}],
-      });
+      onLoginSubmit();
     }
     setUserLoginError(tempError);
   }, [userLogin, userLoginError]);
@@ -69,10 +68,8 @@ const useLogin = () => {
     updateLoginInputValue('isLoading', true);
     Keyboard.dismiss();
     const loginData = {
-      email: 'company@gmail.com',
-      password: 'company@123',
-      // email: userLogin?.email?.trim(),
-      // password: userLogin?.pass?.trim(),
+      email: userLogin?.email?.trim(),
+      password: userLogin?.pass?.trim(),
     };
     try {
       const {data} = await axiosInstance.post(constant?.login, loginData, {
@@ -83,12 +80,12 @@ const useLogin = () => {
       if (data) {
         Log(data, 'data login');
         let userData = {
-          accessToken: data?.token,
+          accessToken: data?.data?.token,
         };
         if (data) {
           Log('login api call', data);
-          // dispatch(loginSuccess(userData));
-          // dispatch(fetchUserProfile(data?.token));
+          dispatch(loginSuccess(userData));
+          dispatch(getUserDetails(data?.data));
           Toast(data?.message);
           navigation.reset({
             index: 0,

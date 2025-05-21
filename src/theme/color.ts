@@ -1,6 +1,7 @@
 export default {
   // Main:
   primaryBG: '#FAFAFA',
+  white: '#fff',
   primaryText: '#151515',
 linerCollor:['rgb(30, 188, 157)', 'rgb(2, 103, 130)'],
   // Supportive:

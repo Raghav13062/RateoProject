@@ -62,7 +62,7 @@ const Login: FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <CustomStatusbar
           backgroundColor={color.secondaryBG}
-          barStyle="dark-content"
+          barStyle="light-content"
         />
         <Header showBackIcon containerStyle={styles.headerStyle} />
         <ScrollView

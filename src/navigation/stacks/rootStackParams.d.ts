@@ -13,4 +13,6 @@ export type RootStackParams = {
   Splash: undefined;
   Profile: undefined;
   PostAds: undefined;
+  CreateEstablishment: undefined;
+  EstablishmentList: undefined;
 };

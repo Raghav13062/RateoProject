@@ -25,14 +25,7 @@ const styles = StyleSheet.create({
   flatStyle: {
     marginTop: 2,
   },
-  backButtonViewLocation: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 15,
-    backgroundColor: color.secondaryBG,
-    borderRadius: 30,
-    padding: 1.3,
-  },
+   
   userLogo: {
     height: 43,
     width: 43,

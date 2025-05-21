@@ -106,6 +106,9 @@ import {CustomStatusbar} from '../../../components/componentsIndex';
 import color from '../../../theme/color';
 import CustomProgressBar from '../../../components/common/customProgressBar/CustomProgressBar';
 // import { Ionicons } from '@expo/vector-icons';
+import LinearGradient from 'react-native-linear-gradient';
+import * as Animatable from 'react-native-animatable';
+import useMyAds from './useMyAds';
 
 const reviews = [
   {
@@ -124,6 +127,7 @@ const reviews = [
 ];
 
 const ReviewManagementScreen = () => {
+  const {userData, navigation, selectLocation} = useMyAds();
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const reviewsPerPage = 3;
@@ -148,13 +152,30 @@ const ReviewManagementScreen = () => {
         backgroundColor={color.secondaryBG}
         barStyle="light-content"
       />
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <LinearGradient
+        style={styles.container}
+        colors={color.linerCollor}
+        start={{x: 0, y: 0}}
+        end={{x: 0, y: 1}}>
+        <View style={styles.stepHeader}>
+          <Animatable.Text
+            animation="fadeInDown"
+            duration={800}
+            delay={300}
+            allowFontScaling={false}
+            style={styles.stepTitle}>
+            {`Welcome ${userData?.name}`}
+          </Animatable.Text>
+        </View>
+      </LinearGradient>
+      <ScrollView
+        style={styles.containerSchroll}
+        showsVerticalScrollIndicator={false}>
         {/* Header */}
         <Text style={styles.screenTitle}>Review Management</Text>
-
         {/* Overview Section */}
         <View style={styles.card}>
-          <Text style={styles.title}>Overview</Text>
+          {/* <Text style={styles.title}>Overview</Text> */}
           <Text
             style={{
               color: 'black',
@@ -232,13 +253,27 @@ const ReviewManagementScreen = () => {
 export default ReviewManagementScreen;
 
 const styles = StyleSheet.create({
-  container: {padding: 16, backgroundColor: '#f6f8fa'},
+  container: {backgroundColor: '#f6f8fa'},
+  containerSchroll: {paddingHorizontal: 20},
   screenTitle: {
     fontSize: 22,
     fontWeight: '600',
     color: 'black',
-    marginBottom: 12,
+    marginVertical: 12,
     textAlign: 'center',
+  },
+  stepTitle: {
+    fontSize: 24,
+    lineHeight: 29,
+    fontWeight: '800',
+    color: color.whiteLight,
+    flex: 1,
+  },
+  stepHeader: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    paddingVertical: 20,
   },
   title: {fontSize: 20, fontWeight: '600', color: 'gray', marginBottom: 6},
   bold: {fontWeight: '500', fontSize: 14, color: 'black', marginLeft: 5},

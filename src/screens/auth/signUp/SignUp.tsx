@@ -1,9 +1,18 @@
 import React, {FC} from 'react';
-import {KeyboardAvoidingView,Text, Platform, ScrollView, View, TouchableOpacity} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Text,
+  Platform,
+  ScrollView,
+  View,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import InputContainer from '../../../components/common/inputContainer/InputContainer';
 import {
   Button,
   CustomStatusbar,
+  ErrorText,
   Header,
   TextCustom,
 } from '../../../components/componentsIndex';
@@ -27,12 +36,16 @@ export interface UserSignUpProps {
   fullName: string;
   phone: string;
   email: string;
+  password: string;
+  image: string;
   isLoading: boolean;
 }
 export interface UserSignUpErrorProps {
   fullNameError?: string;
   phoneError?: string;
   emailError?: string;
+  passwordError?: string;
+  imageError?: string;
 }
 
 const SignUp: FC = () => {
@@ -43,21 +56,22 @@ const SignUp: FC = () => {
     isSignUp,
     onValidateSignUp,
     navigateToLogin,
+    uploadImage,
   } = useLogin();
 
   return (
-         <LinearGradient
-            style={styles.container}
-            colors={color.linerCollor}
-            start={{x: 0, y: 0}}
-            end={{x: 0, y: 1}}>
+    <LinearGradient
+      style={styles.container}
+      colors={color.linerCollor}
+      start={{x: 0, y: 0}}
+      end={{x: 0, y: 1}}>
       <KeyboardAvoidingView
         style={styles.formContainer}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
         <CustomStatusbar
           backgroundColor={color.secondaryBG}
-          barStyle="dark-content"
+          barStyle="light-content"
         />
         <Header showBackIcon containerStyle={styles.headerStyle} />
         <ScrollView
@@ -123,44 +137,69 @@ const SignUp: FC = () => {
               labelStyle={{color: color.whiteLight}}
               placeholderTextColor={color.whiteLight}
               placeholder="Enter Password"
-              // onChangeText={res => updateLoginInputValue('email', res?.trim())}
-              value={userSignUp?.email}
+              onChangeText={res =>
+                updateLoginInputValue('password', res?.trim())
+              }
+              value={userSignUp?.password}
               keyboardType="default"
               maxLength={50}
-              error={userSignUpError?.emailError}
+              error={userSignUpError?.passwordError}
               containerStyle={styles.emailContainer}
               errorLabelStyle={styles.inputErrorStyle}
               inputContainerStyle={{backgroundColor: color.secondaryBG}}
             />
           </Animatable.View>
-          <Text style={{
-            color:"white",
-            fontSize:14,
-            fontWeight:"500",
-            marginTop:5,
-            marginBottom:1
-          }}>Add photos</Text>
-                    <TouchableOpacity 
-          
-          style={{
-            height:55,
-            width:55,
-            backgroundColor:"white",
-            borderWidth:1.5,
-            borderStyle:"dotted",
-            alignItems:"center",
-            justifyContent:"center",
-            borderRadius:10,
-            marginTop:10
-          }}
-          >
+          <Text
+            style={{
+              color: 'white',
+              fontSize: 14,
+              fontWeight: '500',
+              marginTop: 5,
+              marginBottom: 1,
+            }}>
+            Add photos
+          </Text>
+          <View style={{flexDirection: 'row'}}>
+            <View>
+              <TouchableOpacity
+                onPress={uploadImage}
+                style={{
+                  height: 58,
+                  width: 58,
+                  backgroundColor: 'white',
+                  borderWidth: 1.5,
+                  borderStyle: 'dotted',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 10,
+                  marginTop: 10,
+                }}>
+                {userSignUp?.image ? (
+                  <View style={styles.imageContainer}>
+                    <Image
+                      source={{uri: userSignUp?.image}}
+                      style={styles.imageStyle}
+                    />
+                  </View>
+                ) : (
+                  <Text
+                    style={{
+                      color: 'black',
+                      fontSize: 20,
+                    }}>
+                    +
+                  </Text>
+                )}
+              </TouchableOpacity>
+              <ErrorText
+                errorTextStyle={{
+                  alignSelf: 'flex-start',
+                }}
+                error={userSignUpError?.imageError}
+              />
+            </View>
+          </View>
 
-
-            <Text style={{
-              color:"black",
-              fontSize:20
-            }}>+</Text>
-          </TouchableOpacity>
           <Animatable.View animation="fadeInUp" duration={800} delay={500}>
             <View style={styles.contentContainer}>
               <Animatable.View
@@ -169,8 +208,8 @@ const SignUp: FC = () => {
                 duration={2000}>
                 <Button
                   label="Signup"
-                  disabled={isSignUp}
-                  inActive={isSignUp}
+                  // disabled={isSignUp}
+                  // inActive={isSignUp}
                   onPress={onValidateSignUp}
                   containerStyle={styles.btnLoginStyle}
                   isLoading={userSignUp?.isLoading}
@@ -179,10 +218,10 @@ const SignUp: FC = () => {
               </Animatable.View>
             </View>
           </Animatable.View>
-
         </ScrollView>
       </KeyboardAvoidingView>
-</LinearGradient>  );
+    </LinearGradient>
+  );
 };
 
 export default SignUp;

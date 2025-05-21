@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   lableSecondView: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: "white",
+    backgroundColor: 'white',
     zIndex: 1,
     position: 'absolute',
     paddingHorizontal: 4,
@@ -43,12 +43,12 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
-    backgroundColor:"white"
+    backgroundColor: 'white',
   },
   inputStyle: {
     fontFamily: font.PoppinsSemiBold,
     fontSize: 15,
-    color: "black",
+    color: color.whiteLight,
     fontWeight: '400',
     lineHeight: 20,
     flex: 1,

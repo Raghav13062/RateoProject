@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     fontFamily: font.PoppinsMedium,
     fontWeight: '400',
     fontSize: 20,
-    color: color.pacificBlue,
+    color: color.whiteLight,
     lineHeight: 28,
   },
 });
