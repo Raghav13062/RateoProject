@@ -182,7 +182,7 @@ const ReviewManagementScreen = () => {
               fontSize: 14,
               fontWeight: '500',
             }}>
-            {/* Total Reviews : <Text style={styles.bold}>{reviews.length}</Text> */}
+            Total Reviews : <Text style={styles.bold}>{reviews.length}</Text>
           </Text>
           <Text
             style={{
