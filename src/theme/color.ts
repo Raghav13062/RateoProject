@@ -3,7 +3,7 @@ export default {
   primaryBG: '#FAFAFA',
   white: '#fff',
   primaryText: '#151515',
-linerCollor:['rgb(30, 188, 157)', 'rgb(2, 103, 130)'],
+  linerCollor: ['rgb(30, 188, 157)', 'rgb(2, 103, 130)'],
   // Supportive:
   secondaryText: '#8A8A8A',
   secondaryTexts: '#333',
@@ -11,7 +11,7 @@ linerCollor:['rgb(30, 188, 157)', 'rgb(2, 103, 130)'],
   viridianGreen: '#409261',
   buttonBG: '#EFEFEF',
   deactivatedBG: '#E5E5E5',
-  priceTagBG: '#F2F2F2',  
+  priceTagBG: '#F2F2F2',
 
   shadowColor: '#42474C0D',
 
@@ -30,5 +30,5 @@ linerCollor:['rgb(30, 188, 157)', 'rgb(2, 103, 130)'],
   whiteLight: '#F7FFFE',
   darkGreen: '#252525',
   yelloColor: '#ffbf00',
-  activeTab:'#006F71'
+  activeTab: '#006F71',
 };

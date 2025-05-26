@@ -18,13 +18,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     borderRadius: 30,
-    padding: 19,
+    padding: 17.5,
   },
   nameText: {
     fontFamily: font.PoppinsSemiBold,
     fontWeight: '500',
     fontSize: 14,
-    lineHeight: 18,
+    lineHeight: 17,
     color: color.secondaryText,
   },
   financialAlignItems: {

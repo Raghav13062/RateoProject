@@ -16,7 +16,7 @@ const style = StyleSheet.create({
   },
   inActiveContainer: {
     flexDirection: 'row',
-    backgroundColor: color.secondaryBG,
+    backgroundColor: color.lightgray,
     height: 50,
     borderRadius: 10,
     alignItems: 'center',

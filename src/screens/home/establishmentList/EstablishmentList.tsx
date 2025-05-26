@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -12,10 +12,14 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import color from '../../../theme/color';
 import {CustomStatusbar, Header} from '../../../components/componentsIndex';
+import axiosInstance from '../../../services/api';
+import constant from '../../../services/config/constant';
+import {Log} from '../../../utility/log';
 
 const EstablishmentList = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [dataList, setDataList] = useState([]);
 
   const establishment = {
     id: 1,
@@ -31,6 +35,27 @@ const EstablishmentList = () => {
     setDeleteModalVisible(false);
     console.log('Deleted establishment:', establishment.id);
   };
+
+  useEffect(() => {
+    getDetails();
+  }, []);
+
+  //** start get api call getDetails */
+  const getDetails = async () => {
+    try {
+      const {data} = await axiosInstance.get(
+        `${constant.establishmentList}${9}`,
+      );
+      if (data) {
+        console.log('data',data);
+        
+        // setDataList(data?.data);
+      }
+    } catch (error) {
+      Log('Error error :', error);
+    }
+  };
+  //** end get api call getDetails */
 
   return (
     <View style={styles.container}>

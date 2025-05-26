@@ -13,6 +13,7 @@ const useMyAds = () => {
     isLoading: false,
     fullName: '',
     email: '',
+    phone: '',
     dateOfbirth: '',
     bName: '',
     bAdress: '',
@@ -31,8 +32,9 @@ const useMyAds = () => {
 
   //** start with redux */
   const getUpdate = async () => {
-    updateState('fullName', userData?.fullName);
+    updateState('fullName', userData?.name);
     updateState('email', userData?.email);
+    updateState('phone', userData?.phone);
     updateState('dateOfbirth', userData?.dob);
     updateState('bName', userData?.businessName);
     updateState('bAdress', userData?.businessAddress);
@@ -65,7 +67,7 @@ const useMyAds = () => {
     hideDatePicker,
     handleConfirm,
     updateProfile,
-  };
+   };
 };
 
 export default useMyAds;

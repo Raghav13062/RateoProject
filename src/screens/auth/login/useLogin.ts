@@ -21,8 +21,8 @@ const useLogin = () => {
   const dispatch = useAppDispatch();
   const navigation = useAuthNavigation();
   const [userLogin, setUserLogin] = useState<UserLoginProps>({
-    email: 'hello1@gmail.com',
-    pass: '123456',
+    email: 'admin@gmail.com',
+    pass: 'admin@123',
     isLoading: false,
   });
   const [userLoginError, setUserLoginError] = useState<UserLoginErrorProps>({
@@ -47,7 +47,7 @@ const useLogin = () => {
   //** Validate login */
   const onValidateLogin = useCallback(() => {
     Keyboard.dismiss();
-    let tempError = {};
+    let tempError:any = {};
     if (!checkEmail(userLogin?.email)) {
       tempError = {
         emailError: validationMessage.invalidEmail,

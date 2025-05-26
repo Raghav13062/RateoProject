@@ -1,88 +1,83 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  Switch,
-  StyleSheet,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, FlatList, Image, Switch, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { CustomStatusbar, Header } from '../../../components/componentsIndex';
+import {CustomStatusbar, Header} from '../../../components/componentsIndex';
 import color from '../../../theme/color';
-
-const companiesData = [
-  {
-    id: '1',
-    name: 'White Technology',
-    email: 'company@gmail.com',
-    logo: 'https://img.freepik.com/premium-photo/white-bearded-man-png-sticker-transparent-background_53876-943032.jpg?semt=ais_hybrid&w=740',
-    active: true,
-  },
-  {
-    id: '2',
-    name: 'Glimmers',
-    email: 'ktech@gmail.com',
-    logo: 'https://via.placeholder.com/50',
-    active: true,
-  },
-  {
-    id: '3',
-    name: 'White Tech',
-    email: 'saklenkhan000@gmail.com',
-    logo: 'https://via.placeholder.com/50',
-    active: true,
-  },
-  {
-    id: '4',
-    name: 'ApexHealth',
-    email: 'joshi@apexhealth.com',
-    logo: 'https://via.placeholder.com/50',
-    active: true,
-  },
-  {
-    id: '5',
-    name: 'ApexHealth',
-    email: 'joshi15@apexhealth.com',
-    logo: 'https://via.placeholder.com/50',
-    active: true,
-  },
-];
+import axiosInstance from '../../../services/api';
+import constant from '../../../services/config/constant';
+import {Log} from '../../../utility/log';
 
 export default function CompanyList() {
-  const [companies, setCompanies] = useState(companiesData);
+  const [companies, setCompanies] = useState([]);
 
-  const toggleSwitch = (id) => {
-    const updated = companies.map(company =>
-      company.id === id ? { ...company, active: !company.active } : company
-    );
-    setCompanies(updated);
+  useEffect(() => {
+    getDetails();
+  }, [companies]);
+
+  const toggleSwitch = async (id: any, status: any) => {
+    const statusData = {
+      status: status == '0' ? '1' : '0',
+    };
+    try {
+      const {data} = await axiosInstance.post(
+        `${constant?.statusUpdate}${id}`,
+        statusData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      if (data) {
+        Log('update status', data);
+      }
+    } catch (error: any) {
+      console.log(error.response.data, 'error');
+    } finally {
+      getDetails();
+    }
   };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <Image source={{ uri: "https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA4L2pvYjEwMzktZWxlbWVudC0yNS0zOTMucG5n.png" }} style={styles.logo} />
+  //** start get api call getDetails */
+  const getDetails = async () => {
+    try {
+      const {data} = await axiosInstance.get(`${constant.getAllCompany}`);
+      if (data) {
+        setCompanies(data?.data);
+      }
+    } catch (error) {
+      Log('Error company :-', error);
+    }
+  };
+  //** end get api call getDetails */
 
+  const renderItem = ({item}: any) => (
+    <View style={styles.card}>
+      <Image
+        source={{
+          uri: 'https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA4L2pvYjEwMzktZWxlbWVudC0yNS0zOTMucG5n.png',
+        }}
+        style={styles.logo}
+      />
       <View style={styles.info}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.email}>{item.email}</Text>
+        <Text style={styles.name}>{item?.business_name}</Text>
+        <Text style={styles.email}>{item?.email}</Text>
         <View style={styles.statusContainer}>
           <Icon
-            name={item.active ? 'check-circle' : 'times-circle'}
+            name={item.status != '0' ? 'check-circle' : 'times-circle'}
             size={16}
-            color={item.active ? '#28a745' : '#dc3545'}
-            style={{ marginRight: 5 }}
+            color={item.status != '0' ? '#28a745' : '#dc3545'}
+            style={{marginRight: 5}}
           />
-          <Text style={{ color: item.active ? '#28a745' : '#dc3545' }}>
-            {item.active ? 'Active' : 'Inactive'}
+          <Text style={{color: item.status != '0' ? '#28a745' : '#dc3545'}}>
+            {item.status != '0' ? 'Active' : 'Inactive'}
           </Text>
         </View>
       </View>
-
       <Switch
-        value={item.active}
-        onValueChange={() => toggleSwitch(item.id)}
-        trackColor={{ false: '#ccc', true: '#34D399' }}
+        value={item?.status == '1' ? true : false}
+        onValueChange={() => toggleSwitch(item?.id, item?.status)}
+        trackColor={{false: '#ccc', true: '#34D399'}}
         thumbColor={item.active ? '#10B981' : '#f4f3f4'}
       />
     </View>
@@ -90,22 +85,22 @@ export default function CompanyList() {
 
   return (
     <View style={styles.container}>
-           <CustomStatusbar
-                      backgroundColor={color.secondaryBG}
-                      barStyle="dark-content"
-                    />
-                    <Header
-                      lable="Company"
-                      showBackIcon
-                      containerStyle={styles.headerStyle}
-                    />
-      <FlatList 
-      style={{
-        marginHorizontal:20,
-        marginTop:15
-      }}
+      <CustomStatusbar
+        backgroundColor={color.secondaryBG}
+        barStyle="dark-content"
+      />
+      <Header
+        lable="Company"
+        showBackIcon
+        containerStyle={styles.headerStyle}
+      />
+      <FlatList
+        style={{
+          marginHorizontal: 20,
+          marginTop: 15,
+        }}
         data={companies}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(_, index) => `${index}`}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
       />
@@ -115,7 +110,7 @@ export default function CompanyList() {
 
 const styles = StyleSheet.create({
   container: {
-     backgroundColor: '#f2f2f2',
+    backgroundColor: '#f2f2f2',
     flex: 1,
   },
   card: {
@@ -127,7 +122,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowRadius: 5,
     elevation: 3,
   },
@@ -156,9 +151,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   headerStyle: {
-        paddingLeft: 18,
-        backgroundColor: color.secondaryBG,
-        marginBottom: 0,
-        paddingTop: 4,
-      },
+    paddingLeft: 18,
+    backgroundColor: color.secondaryBG,
+    marginBottom: 0,
+    paddingTop: 4,
+  },
 });

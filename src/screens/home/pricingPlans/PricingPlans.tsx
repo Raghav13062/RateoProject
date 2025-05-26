@@ -1,82 +1,93 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { CustomStatusbar, Header } from '../../../components/componentsIndex';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {CustomStatusbar, Header} from '../../../components/componentsIndex';
 import color from '../../../theme/color';
+import axiosInstance from '../../../services/api';
+import constant from '../../../services/config/constant';
+import {Log} from '../../../utility/log';
 
-const plans = [
-  {
-    title: 'Basic Plan',
-    price: '$199.99',
-    duration: 'Per Year',
-    trial: '10',
-    reports: '3',
-    establishments: '5',
-    features: ['AI Review Insights', 'Rating: 5/5', 'Shareable Review: Yes', 'QR Banner Design Tool', 'Monthly Reports', 'Custom Branding', 'Priority Support'],
-  },
-  {
-    title: 'Pro Plan',
-    price: '$499.99',
-    duration: 'Per Year',
-    trial: '14',
-    reports: '6',
-    establishments: '10',
-    features: ['AI Review Insights', 'Rating: 5/5', 'Shareable Review: Yes', 'QR Banner Design Tool', 'Monthly Reports', 'Custom Branding', 'Priority Support'],
-  },
-  {
-    title: 'Growth Plan',
-    price: '$799.00',
-    duration: 'Per Year',
-    trial: '14',
-    reports: '9',
-    establishments: '20',
-    features: ['AI Review Insights', 'Rating: 5/5', 'Shareable Review: Yes', 'QR Banner Design Tool', 'Monthly Reports', 'Custom Branding', 'Priority Support'],
-  },
+const features = [
+  'AI Review Insights',
+  'Rating: 5/5',
+  'Shareable Review: Yes',
+  'QR Banner Design Tool',
+  'Monthly Reports',
+  'Custom Branding',
+  'Priority Support',
 ];
 
 const PricingPlans = () => {
+  const [dataList, setDataList] = useState([]);
+  useEffect(() => {
+    getDetails();
+  }, []);
+
+  //** start get api call PlanList */
+  const getDetails = async () => {
+    try {
+      const {data} = await axiosInstance.get(constant.planList);
+      if (data) {
+        setDataList(data?.data);
+      }
+    } catch (error) {
+      Log('Error Plan List:', error);
+    }
+  };
+  //** end get api call PlanList */
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-          <CustomStatusbar
-                      backgroundColor={color.secondaryBG}
-                      barStyle="dark-content"
-                    />
-                    <Header
-                      lable="Plans"
-                      showBackIcon
-                      containerStyle={styles.headerStyle}
-                    />
-      {plans.map((plan, index) => (
+    <View style={styles.container}>
+      <CustomStatusbar
+        backgroundColor={color.secondaryBG}
+        barStyle="dark-content"
+      />
+      <Header lable="Plans" showBackIcon containerStyle={styles.headerStyle} />
+      <ScrollView contentContainerStyle={styles.container}>
+      {dataList?.map((plan: any, index: number) => (
         <View key={index} style={styles.card}>
-          <Text style={styles.title}>{plan.title}</Text>
-          <Text style={styles.price}>{plan.price} <Text style={styles.perYear}>/{plan.duration}</Text></Text>
-          <Text style={styles.trial}>Free Trial Days: {plan.trial}</Text>
+          <Text style={styles.title}>{plan?.plan_name}</Text>
+          <Text style={styles.price}>
+            {plan?.price} <Text style={styles.perYear}>/{'Per Year'}</Text>
+          </Text>
+          <Text style={styles.trial}>
+            Free Trial Days: {plan?.free_trial_days}
+          </Text>
+          {/* <View style={styles.divider} /> */}
+          <Text style={styles.detail}>
+            ✅ {plan?.month_duration} Month Reports
+          </Text>
+          <Text style={styles.detail}>
+            ✅ {plan?.num_establishments} Establishments
+          </Text>
+          <Text style={styles.detail}>
+            ✅ {plan?.free_trial_days} Trial Days
+          </Text>
+          <Text style={styles.detail}>✅ {plan?.price} Price</Text>
           <View style={styles.divider} />
-          <Text style={styles.detail}>✅ {plan.reports} Month Reports</Text>
-          <Text style={styles.detail}>✅ {plan.establishments} Establishments</Text>
-          <Text style={styles.detail}>✅ {plan.trial} Trial Days</Text>
-          <Text style={styles.detail}>✅ {plan.price} Price</Text>
-          {/* {plan.features.map((feature, i) => (
-            <Text key={i} style={styles.detail}>✅ {feature}</Text>
-          ))} */}
+          {features.map((feature: any, i: number) => (
+            <Text key={i} style={styles.detail}>
+              ✅ {feature}
+            </Text>
+          ))}
         </View>
       ))}
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-     paddingBottom: 40,
+    paddingBottom: 40,
   },
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
     marginBottom: 10,
-     marginHorizontal:20,
-    marginTop:14,
-    borderWidth:1,
-    borderColor:color.secondaryBG
+    marginHorizontal: 20,
+    marginTop: 14,
+    borderWidth: 1,
+    borderColor: color.secondaryBG,
   },
   title: {
     fontSize: 22,
@@ -94,11 +105,11 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   headerStyle: {
-        paddingLeft: 18,
-        backgroundColor: color.secondaryBG,
-        marginBottom: 0,
-        paddingTop: 4,
-      },
+    paddingLeft: 18,
+    backgroundColor: color.secondaryBG,
+    marginBottom: 0,
+    paddingTop: 4,
+  },
   trial: {
     fontSize: 14,
     color: '#555',

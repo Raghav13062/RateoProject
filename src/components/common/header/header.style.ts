@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   textViewStyle: {
-    flex: 0.6,
+    flex: 0.9,
   },
   labelText: {
     fontFamily: font.PoppinsMedium,

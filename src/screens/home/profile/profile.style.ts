@@ -10,22 +10,21 @@ const styles = StyleSheet.create({
   flatStyle: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: color.secondaryBG,
   },
   headingText: {
     fontFamily: font.PoppinsSemiBold,
     fontSize: 18,
     lineHeight: 22,
-    color: color.pacificBlue,
+    color: color.secondaryBG,
     flex: 1,
     fontWeight: '700',
     marginTop: 20,
   },
   headerStyle: {
     paddingLeft: 18,
-    backgroundColor: color.buttonBG,
+    backgroundColor: color.secondaryBG,
     marginBottom: 0,
-    paddingTop: 6,
+    paddingTop: 4,
   },
   flatAnimation: {
     flex: 1,

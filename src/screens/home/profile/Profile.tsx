@@ -14,12 +14,7 @@ import styles from './profile.style';
 import useDashBord from './useProfile';
 
 const Profile: FC = () => {
-  const {
-    updateState,
-    ProfileState,
-
-    updateProfile,
-  } = useDashBord();
+  const {updateState, ProfileState, updateProfile, userData} = useDashBord();
 
   return (
     <KeyboardAvoidingView
@@ -30,9 +25,9 @@ const Profile: FC = () => {
         barStyle="dark-content"
       />
       <Header
+        lable="Profile"
         showBackIcon
         containerStyle={styles.headerStyle}
-        lable="Profile"
       />
       <ScrollView style={styles.flatStyle} showsVerticalScrollIndicator={false}>
         <Animatable.View
@@ -44,7 +39,7 @@ const Profile: FC = () => {
             <TextCustom label={`Profile Details`} style={styles.headingText} />
           </Animatable.View>
           <InputContainer
-            label="Full Name"
+            label="Name"
             labelStyle={{color: color.primaryText}}
             placeholderTextColor={color.primaryText}
             placeholder="Enter Name"
@@ -68,8 +63,20 @@ const Profile: FC = () => {
             errorLabelStyle={styles.inputErrorStyle}
             inputContainerStyle={{backgroundColor: color.secondaryBG}}
           />
-
           <InputContainer
+            label="Phone Number"
+            labelStyle={{color: color.primaryText}}
+            placeholderTextColor={color.primaryText}
+            placeholder="Enter Number"
+            onChangeText={res => updateState('phone', res?.trim())}
+            value={ProfileState?.phone}
+            keyboardType="number-pad"
+            maxLength={10}
+            containerStyle={styles.emailContainer}
+            errorLabelStyle={styles.inputErrorStyle}
+            inputContainerStyle={{backgroundColor: color.secondaryBG}}
+          />
+          {/* <InputContainer
             label="Business Name"
             labelStyle={{color: color.primaryText}}
             placeholderTextColor={color.primaryText}
@@ -94,7 +101,7 @@ const Profile: FC = () => {
             containerStyle={styles.emailContainer}
             errorLabelStyle={styles.inputErrorStyle}
             inputContainerStyle={{backgroundColor: color.secondaryBG}}
-          />
+          /> */}
         </Animatable.View>
         <Animatable.View animation="fadeInUp" duration={800} delay={500}>
           <View style={styles.contentContainer}>

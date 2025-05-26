@@ -1,113 +1,11 @@
-// import React, {FC} from 'react';
-// import {FlatList, Image, TouchableOpacity, View} from 'react-native';
-// import * as Animatable from 'react-native-animatable';
-// import Icon from 'react-native-vector-icons/Ionicons';
-// import {
-//   CustomStatusbar,
-//   SearchBar,
-//   TextCustom,
-// } from '../../../components/componentsIndex';
-// import color from '../../../theme/color';
-// import styles from './myAds.style';
-// import useDashBord from './useMyAds';
-// import imageIndex from '../../../assets/imageIndex';
-// import {adsListdata} from './myAds.const';
-
-// const MyAds: FC = () => {
-//   const {dashState, updateState, userData, navigation, selectLocation} =
-//     useDashBord();
-
-//   return (
-//     <View style={styles.container}>
-//       <CustomStatusbar
-//         backgroundColor={color.pacificBlue}
-//         barStyle="light-content"
-//       />
-//       <View style={styles.stepHeader}>
-//         <Animatable.View animation="fadeInLeft" duration={800} delay={100}>
-//           <View style={styles.backButtonViewLocation}>
-//             <Image style={styles.userLogo} source={imageIndex.teamwork} />
-//           </View>
-//         </Animatable.View>
-//         <Animatable.Text
-//           animation="fadeInDown"
-//           duration={800}
-//           delay={300}
-//           allowFontScaling={false}
-//           style={styles.stepTitle}>
-//           {`Welcome ${userData?.fullName ?? 'Customer'}`}
-//         </Animatable.Text>
-//       </View>
-//       <Animatable.View animation="fadeInLeft" duration={800} delay={100}>
-//         <SearchBar
-//           placeholder={`Search My Ads`}
-//           placeholderTextColor={color.darkGreen}
-//           containerStyle={styles.searchContainerStyle}
-//           selectionColor={color.pacificBlue}
-//         />
-//       </Animatable.View>
-//       <Animatable.View
-//         animation="fadeInUp"
-//         duration={1000}
-//         delay={400}
-//         style={styles.filetrRowStyle}>
-//         <TextCustom label={`Features Ads`} style={styles.headingText} />
-//         <Icon name="filter-outline" size={34} color={color.pacificBlue} />
-//       </Animatable.View>
-//       <Animatable.View
-//         animation="fadeInLeft"
-//         duration={800}
-//         delay={100}
-//         style={styles.flatAnimation}>
-//         <FlatList
-//           data={adsListdata}
-//           renderItem={({item, index}: any) => (
-//             <View key={index} style={styles.card}>
-//               <Image source={{uri: item.image}} style={styles.image} />
-//               <View style={styles.infoContainer}>
-//                 <TextCustom label={item?.title} style={styles.title} />
-//                 <TextCustom
-//                   label={item?.decription}
-//                   style={styles.description}
-//                 />
-//                 <View style={styles.footer}>
-//                   <TextCustom label={'22 Feb 2022'} style={styles.date} />
-//                   <TouchableOpacity
-//                     activeOpacity={0.8}
-//                     style={styles.callButton}>
-//                     <TextCustom label={'CALL NOW'} style={styles.callText} />
-//                   </TouchableOpacity>
-//                 </View>
-//               </View>
-//             </View>
-//           )}
-//           keyExtractor={(_, index) => `${index}`}
-//           contentContainerStyle={styles.flatStyle}
-//           showsVerticalScrollIndicator={false}
-//           ListFooterComponent={() => <View style={{marginBottom: '20%'}} />}
-//         />
-//       </Animatable.View>
-//     </View>
-//   );
-// };
-// export default MyAds;
-
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
+import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+import CustomProgressBar from '../../../components/common/customProgressBar/CustomProgressBar';
 import {CustomStatusbar} from '../../../components/componentsIndex';
 import color from '../../../theme/color';
-import CustomProgressBar from '../../../components/common/customProgressBar/CustomProgressBar';
 // import { Ionicons } from '@expo/vector-icons';
-import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
+import LinearGradient from 'react-native-linear-gradient';
 import useMyAds from './useMyAds';
 
 const reviews = [
@@ -173,9 +71,14 @@ const ReviewManagementScreen = () => {
         showsVerticalScrollIndicator={false}>
         {/* Header */}
         <Text style={styles.screenTitle}>Review Management</Text>
-        {/* Overview Section */}
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          placeholderTextColor={color.black}
+          value={search}
+          onChangeText={setSearch}
+        />
         <View style={styles.card}>
-          {/* <Text style={styles.title}>Overview</Text> */}
           <Text
             style={{
               color: 'black',
@@ -200,7 +103,16 @@ const ReviewManagementScreen = () => {
               100;
             return (
               <View key={rate} style={styles.barRow}>
-                <Text>{rate}</Text>
+                <Text
+                  style={{
+                    color: color.primaryText,
+                    fontSize: 15,
+                    lineHeight: 19,
+                    marginRight: 5,
+                    marginTop: 3,
+                  }}>
+                  {rate}
+                </Text>
                 <View style={styles.barWrapper}>
                   <CustomProgressBar
                     progress={0.72}
@@ -213,38 +125,31 @@ const ReviewManagementScreen = () => {
             );
           })}
         </View>
-
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          placeholderTextColor={color.black}
-          value={search}
-          onChangeText={setSearch}
-        />
-
-        {paginated.map((item, idx) => (
-          <View key={idx} style={styles.reviewCard}>
-            <View style={styles.cardTop}>
-              {/* <Ionicons name="person-circle-outline" size={30} color="#555" /> */}
-              <View>
-                <Text style={styles.email}>{item.email}</Text>
-                <Text style={styles.date}>{item.date}</Text>
+        <View style={{marginBottom: '40%'}}>
+          {paginated.map((item, idx) => (
+            <View key={idx} style={styles.reviewCard}>
+              <View style={styles.cardTop}>
+                {/* <Ionicons name="person-circle-outline" size={30} color="#555" /> */}
+                <View>
+                  <Text style={styles.email}>{item.email}</Text>
+                  <Text style={styles.date}>{item.date}</Text>
+                </View>
               </View>
-            </View>
-            <Text style={styles.feedback}>
-              {item.feedback ? (
-                item.feedback
-              ) : (
-                <Text style={styles.noFeedback}>No Feedback Provided</Text>
-              )}
-            </Text>
-            <View style={styles.stars}>
-              {/* {Array.from({ length: item.rating }).map((_, i) => (
+              <Text style={styles.feedback}>
+                {item.feedback ? (
+                  item.feedback
+                ) : (
+                  <Text style={styles.noFeedback}>No Feedback Provided</Text>
+                )}
+              </Text>
+              <View style={styles.stars}>
+                {/* {Array.from({ length: item.rating }).map((_, i) => (
               // <Ionicons key={i} name="star" size={18} color="#FFD700" />
             ))} */}
+              </View>
             </View>
-          </View>
-        ))}
+          ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -307,8 +212,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#4caf50',
     borderRadius: 6,
   },
-  percent: {width: 40, color: color.activeTab},
-
+  percent: {
+    width: 40,
+    color: color.activeTab,
+    fontSize: 15,
+    lineHeight: 19,
+    marginLeft: 3,
+  },
   searchInput: {
     backgroundColor: '#fff',
     padding: 10,
@@ -319,7 +229,6 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 15,
   },
-
   reviewCard: {
     backgroundColor: '#fff',
     padding: 8,

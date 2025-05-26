@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useAppDispatch, useAppSelector} from '../../../hooks/useRedux';
 import {RootState} from '../../../services/redux/store';
 import imageIndex from '../../../assets/imageIndex';
-import {drawerItems} from './profile.const';
+import {drawerItems} from './support.const';
 import {logoutSucces} from '../../../services/redux/userReducer/reducer';
 import {useAuthNavigation} from '../../../hooks/useAppNavigation';
 import {LinearGradient} from 'react-native-linear-gradient';
@@ -64,7 +64,7 @@ const SupportScreen: FC = () => {
           delay={300}
           allowFontScaling={false}
           style={styles.stepTitle}>
-          {`Welcome ${userData?.fullName ?? 'Customer'}`}
+          {`Welcome ${userData?.name ?? 'Customer'}`}
         </Animatable.Text>
       </LinearGradient>
 
