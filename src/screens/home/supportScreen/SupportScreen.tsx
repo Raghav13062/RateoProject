@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useAppDispatch, useAppSelector} from '../../../hooks/useRedux';
 import {RootState} from '../../../services/redux/store';
 import imageIndex from '../../../assets/imageIndex';
-import {drawerItems} from './support.const';
+import {adminData, CompanyData} from './support.const';
 import {logoutSucces} from '../../../services/redux/userReducer/reducer';
 import {useAuthNavigation} from '../../../hooks/useAppNavigation';
 import {LinearGradient} from 'react-native-linear-gradient';
@@ -24,6 +24,8 @@ const SupportScreen: FC = () => {
   const {userData} = useAppSelector((state: RootState) => state.UserData);
   const dispatch = useAppDispatch();
   const navigation = useAuthNavigation();
+
+  console.log('userData', userData?.group_id);
 
   const onPress = (screenName: string) => {
     if (screenName === 'Logout') {
@@ -47,7 +49,6 @@ const SupportScreen: FC = () => {
         backgroundColor={color.secondaryBG}
         barStyle="light-content"
       />
-
       <LinearGradient
         style={styles.stepHeader}
         colors={color.linerCollor}
@@ -77,7 +78,12 @@ const SupportScreen: FC = () => {
           duration={600}
           delay={400}
           style={styles.optionsContainer}>
-          {drawerItems.map((item, index) => (
+          {(userData?.group_id == 2
+            ? adminData
+            : userData?.group_id == 3
+            ? CompanyData
+            : []
+          )?.map((item, index) => (
             <Animatable.View
               key={index}
               animation="fadeInUp"

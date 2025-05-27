@@ -9,4 +9,5 @@ export default {
   getAllCompany: 'getAllCompany',
   statusUpdate: 'updateCompanyStatus/',
   planList: 'plan',
+  createQRWithLocation: 'reviews',
 };

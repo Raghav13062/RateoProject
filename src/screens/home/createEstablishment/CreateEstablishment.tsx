@@ -23,16 +23,18 @@ import {Rating} from 'react-native-ratings';
 import axiosInstance from '../../../services/api';
 import constant from '../../../services/config/constant';
 import {Toast} from '../../../utility/functions/toast';
-import { useAuthNavigation } from '../../../hooks/useAppNavigation';
+import {useAuthNavigation} from '../../../hooks/useAppNavigation';
+import {useAppSelector} from '../../../hooks/useRedux';
+import {RootState} from '../../../services/redux/store';
 
 const CreateEstablishment = () => {
-    const navigation = useAuthNavigation();
-  
+  const {userData} = useAppSelector((state: RootState) => state.UserData);
+  const navigation = useAuthNavigation();
   const [loading, setLoading] = useState(false);
   const [businessName, setBusinessName] = useState('');
   const [location, setLocation] = useState('');
   const [footer, setFooter] = useState('');
-  const [selectedRating, setSelectedRating] = useState(3);
+  const [selectedRating, setSelectedRating] = useState(0);
   const [offer, setOffer] = useState('');
   const [language, setLanguage] = useState('');
   const [size, setSize] = useState('');
@@ -40,9 +42,10 @@ const CreateEstablishment = () => {
   const [formErrors, setFormErrors] = useState<any>({});
 
   //** Handle active */
-  const handleActive = useMemo(() => !language || !size, [language, size]);
+  const handleActive = useMemo(() => !language, [language]);
 
   const handleRatingCompleted = (rating: any) => {
+    console.log('rating',rating);
     setSelectedRating(rating);
   };
 
@@ -75,12 +78,12 @@ const CreateEstablishment = () => {
     if (!location.trim()) {
       errors.location = 'Please Enter Location';
     }
-    if (!footer.trim()) {
-      errors.footer = 'Please Enter Footer';
-    }
-    if (!offer.trim()) {
-      errors.offer = 'Please Enter offer';
-    }
+    // if (!footer.trim()) {
+    //   errors.footer = 'Please Enter Footer';
+    // }
+    // if (!offer.trim()) {
+    //   errors.offer = 'Please Enter offer';
+    // }
     if (!logo) {
       errors.logo = 'Please Select Photo';
     }
@@ -93,57 +96,80 @@ const CreateEstablishment = () => {
       setFormErrors(errors);
       return;
     }
-
-    onDoneSubmit();
+    getBusinessReviews();
   };
 
-  const onDoneSubmit = useCallback(async () => {
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('user_id', 2);
-    formData.append('url', 'https://example.com/page');
-    formData.append('headline', 'Scan Me!gfg');
-    formData.append('footer', footer);
-    formData.append('size', size);
-    formData.append('qr_color', 'sddsccdfdf');
-    formData.append('offer', offer);
-    formData.append('place_id', 'ChIJreE9nc3jYjkR9T9Yn-Y-r-s');
-    formData.append('location', location);
-    formData.append('business_type', businessName);
-    formData.append('language', language);
-    if (selectedRating) {
-      formData.append('business_rating', selectedRating);
-    }
-    const imageName = logo?.split('/').pop();
-    const type = 'image/png';
-    if (logo) {
-      formData.append('image', {
-        name: imageName,
-        uri: Platform.OS === 'android' ? logo : logo?.replace('file://', ''),
-        type: type,
-      });
-    }
-
+  const getBusinessReviews = async () => {
     try {
-      const {data} = await axiosInstance.post(constant?.createQR, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          // Authorization: `Bearer ${token}`,
-        },
-      });
+      const formattedQuery = `${businessName} ${location}`;
+      const {data} = await axiosInstance.get(
+        `${constant.baseURL}reviews/${encodeURIComponent(formattedQuery)}`,
+      );
       if (data) {
-        console.log('data===>>>', data);
-        setLoading(false);
-        Toast(data?.message);
-        navigation.goBack()
+        onDoneSubmit(data?.data?.place_id, data?.data?.url);
       }
     } catch (error: any) {
-      console.log(error, 'error');
-      console.log(error.response?.data, 'error');
-      setLoading(false);
       Toast(error?.response?.data?.msg);
+      console.error('Error fetching business reviews:', error);
     }
-  }, []);
+  };
+
+  const onDoneSubmit = useCallback(
+    async (placeId: any, url: any) => {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('user_id', userData?.id);
+      formData.append('url', url);
+      formData.append('headline', businessName);
+      // formData.append('footer', footer);
+      // formData.append('size', size);
+      // formData.append('qr_color', 'sddsccdfdf');
+      // formData.append('offer', offer);
+      formData.append('place_id', placeId);
+      formData.append('location', location);
+      // formData.append('business_type', businessName);
+      formData.append('language', language);
+      if (selectedRating) {
+        formData.append('business_rating', selectedRating);
+      }
+      const imageName = logo?.split('/').pop();
+      const type = 'image/png';
+      if (logo) {
+        formData.append('image', {
+          name: imageName,
+          uri: Platform.OS === 'android' ? logo : logo?.replace('file://', ''),
+          type: type,
+        });
+      }
+      if (logo) {
+        formData.append('logo', {
+          name: imageName,
+          uri: Platform.OS === 'android' ? logo : logo?.replace('file://', ''),
+          type: type,
+        });
+      }
+
+      try {
+        const {data} = await axiosInstance.post(constant?.createQR, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        if (data) {
+          console.log('data===>>>', data);
+          setLoading(false);
+          Toast(data?.message);
+          navigation.goBack();
+        }
+      } catch (error: any) {
+        console.log(error, 'error');
+        console.log(error.response?.data, 'error');
+        setLoading(false);
+        Toast(error?.response?.data?.msg);
+      }
+    },
+    [businessName, logo, language, location,selectedRating],
+  );
 
   return (
     <View
@@ -162,11 +188,11 @@ const CreateEstablishment = () => {
       />
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <InputContainer
-          placeholder="Enter Your Business Name"
+          placeholder="Enter Business Name"
           labelStyle={{color: color.whiteLight}}
           placeholderTextColor={color.whiteLight}
           keyboardType="default"
-          maxLength={20}
+          maxLength={40}
           containerStyle={styles.emailContainer}
           inputContainerStyle={{backgroundColor: color.secondaryBG}}
           onChangeText={res => {
@@ -178,11 +204,11 @@ const CreateEstablishment = () => {
           errorLabelStyle={{marginTop: '15%'}}
         />
         <InputContainer
-          placeholder="Location"
+          placeholder="Enter Business Address"
           labelStyle={{color: color.whiteLight}}
           placeholderTextColor={color.whiteLight}
           keyboardType="default"
-          maxLength={20}
+          maxLength={50}
           containerStyle={styles.emailContainer}
           inputContainerStyle={{backgroundColor: color.secondaryBG}}
           error={formErrors?.location}
@@ -193,12 +219,12 @@ const CreateEstablishment = () => {
           value={location}
           errorLabelStyle={{marginTop: '15%'}}
         />
-        <InputContainer
-          placeholder="Footer"
+        {/* <InputContainer
+          placeholder="Enter Footer"
           labelStyle={{color: color.whiteLight}}
           placeholderTextColor={color.whiteLight}
           keyboardType="default"
-          maxLength={20}
+          maxLength={40}
           containerStyle={styles.emailContainer}
           inputContainerStyle={{backgroundColor: color.secondaryBG}}
           value={footer}
@@ -210,11 +236,11 @@ const CreateEstablishment = () => {
           errorLabelStyle={{marginTop: '15%'}}
         />
         <InputContainer
-          placeholder="Offer (Optional)"
+          placeholder="Enter Offer"
           labelStyle={{color: color.whiteLight}}
           placeholderTextColor={color.whiteLight}
           keyboardType="default"
-          maxLength={30}
+          maxLength={40}
           containerStyle={styles.emailContainer}
           inputContainerStyle={{backgroundColor: color.secondaryBG}}
           value={offer}
@@ -224,19 +250,19 @@ const CreateEstablishment = () => {
             setFormErrors((prev: any) => ({...prev, offer: ''}));
           }}
           errorLabelStyle={{marginTop: '15%'}}
-        />
+        /> */}
         <CustomDropdown
           options={['English', 'Hindi', 'Spanish', 'French']}
           selected={language ?? 'Select Language'}
           onSelect={setLanguage}
           placeholder="Select Language"
         />
-        <CustomDropdown
+        {/* <CustomDropdown
           options={['Medium 250', 'Large 300*300']}
           selected={size ?? 'Select Size'}
           onSelect={setSize}
           placeholder="Select Size"
-        />
+        /> */}
         {logo ? (
           <View style={styles.imageContainer}>
             <Image source={{uri: logo}} style={styles.image} />
@@ -284,12 +310,15 @@ const CreateEstablishment = () => {
           Choose the rating below which reviews stay private:
         </Text>
         <Rating
-          type="star"
-          ratingCount={4}
+          type="custom"
+          ratingCount={5}
           imageSize={40}
           startingValue={selectedRating}
           onFinishRating={handleRatingCompleted}
           style={styles.rating}
+          ratingBackgroundColor={color.lightgray}
+          tintColor={'#F5F5F5'}
+          ratingColor={color.yelloColor}
           fractions={0}
         />
         <Text style={styles.note}>

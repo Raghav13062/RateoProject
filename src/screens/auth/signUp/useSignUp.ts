@@ -91,7 +91,7 @@ const useSignUp = () => {
     formData.append('phone', userSignUp?.phone);
     formData.append('email', userSignUp?.email);
     formData.append('password', userSignUp?.password);
-    formData.append('group_id', 2);
+    formData.append('group_id', 3);
 
     const imageName = userSignUp?.image?.split('/').pop();
     const type = 'image/png';

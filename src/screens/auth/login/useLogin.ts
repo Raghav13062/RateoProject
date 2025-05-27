@@ -21,8 +21,8 @@ const useLogin = () => {
   const dispatch = useAppDispatch();
   const navigation = useAuthNavigation();
   const [userLogin, setUserLogin] = useState<UserLoginProps>({
-    email: 'admin@gmail.com',
-    pass: 'admin@123',
+    email: '',
+    pass: '',
     isLoading: false,
   });
   const [userLoginError, setUserLoginError] = useState<UserLoginErrorProps>({

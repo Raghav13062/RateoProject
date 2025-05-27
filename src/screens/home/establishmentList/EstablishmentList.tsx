@@ -15,26 +15,15 @@ import {CustomStatusbar, Header} from '../../../components/componentsIndex';
 import axiosInstance from '../../../services/api';
 import constant from '../../../services/config/constant';
 import {Log} from '../../../utility/log';
+import {useAppSelector} from '../../../hooks/useRedux';
+import {RootState} from '../../../services/redux/store';
 
 const EstablishmentList = () => {
+  const {userData} = useAppSelector((state: RootState) => state.UserData);
   const [modalVisible, setModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [dataList, setDataList] = useState([]);
-
-  const establishment = {
-    id: 1,
-    user: 'Apna care',
-    email: 'Company@gmail.com',
-    generatedBy: 'White Technology',
-    banner: 'https://res.cloudinary.com/dk/image/upload/v1689845782/sample.jpg',
-    googleReviewUrl: 'https://maps.google.com/?cid=123456789',
-    date: '2025-05-12T07:25:28.000Z',
-  };
-
-  const handleDelete = () => {
-    setDeleteModalVisible(false);
-    console.log('Deleted establishment:', establishment.id);
-  };
+  const [selectedEstablishment, setSelectedEstablishment] = useState<any>(null);
 
   useEffect(() => {
     getDetails();
@@ -44,18 +33,29 @@ const EstablishmentList = () => {
   const getDetails = async () => {
     try {
       const {data} = await axiosInstance.get(
-        `${constant.establishmentList}${9}`,
+        `${constant.establishmentList}/${userData?.id}`,
       );
       if (data) {
-        console.log('data',data);
-        
-        // setDataList(data?.data);
+        setDataList(data?.data);
       }
     } catch (error) {
       Log('Error error :', error);
     }
   };
   //** end get api call getDetails */
+
+  const handleApiDelete = async () => {
+    try {
+      await axiosInstance.delete(
+        `${constant.baseURL}qr-code/${selectedEstablishment?.id}`,
+      );
+      setDeleteModalVisible(false);
+      setSelectedEstablishment(null);
+      getDetails(); // Refresh list
+    } catch (error) {
+      Log('Delete Error:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -68,94 +68,129 @@ const EstablishmentList = () => {
         showBackIcon
         containerStyle={styles.headerStyle}
       />
-      <View style={styles.card}>
-        <Image source={{uri: establishment.banner}} style={styles.banner} />
-        <View style={styles.infoSection}>
-          <Text style={styles.title}>{establishment.user}</Text>
-          <Text style={styles.generatedBy}>{establishment.generatedBy}</Text>
-          <Text style={styles.emaiStyle}>{establishment.email}</Text>
-          <View style={styles.actionButtons}>
-            <TouchableOpacity
-              onPress={() => setModalVisible(true)}
-              style={styles.iconButton}>
-              <Icon name="eye-outline" size={24} color="#007BFF" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setDeleteModalVisible(true)}
-              style={styles.iconButton}>
-              <Icon name="trash-outline" size={24} color="red" />
-            </TouchableOpacity>
+      {dataList?.map((establishment: any) => (
+        <View style={styles.card}>
+          <View style={styles.imageCard}>
+            <Image source={{uri: establishment.logo}} style={styles.banner} />
+          </View>
+          <View style={styles.infoSection}>
+            <Text style={styles.title}>{establishment.name}</Text>
+            <Text style={styles.generatedBy}>
+              Rating: {establishment.business_rating}⭐
+            </Text>
+            <Text style={styles.emaiStyle}>{establishment.email}</Text>
+            <Text style={styles.location}>
+              Location: {establishment.location}
+            </Text>
+            <View style={styles.actionButtons}>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedEstablishment(establishment);
+                  setModalVisible(true);
+                }}
+                style={styles.iconButton}>
+                <Icon name="eye-outline" size={24} color="#007BFF" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedEstablishment(establishment);
+                  setDeleteModalVisible(true);
+                }}
+                style={styles.iconButton}>
+                <Icon name="trash-outline" size={24} color="red" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
+      ))}
 
-        <Modal
-          visible={modalVisible}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setModalVisible(false)}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.title}>Establishment Details</Text>
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <Icon name="close-outline" size={24} color="red" />
-                </TouchableOpacity>
-              </View>
-              <View style={{alignSelf: 'flex-start'}}>
-                <Text>User: {establishment.user}</Text>
-                <Text>Generated By: {establishment.generatedBy}</Text>
-              </View>
-              <Image
-                source={{uri: establishment.banner}}
-                style={styles.modalBanner}
-              />
-              <View style={{alignSelf: 'flex-start'}}>
-                <Text>
-                  Location:{' '}
-                  <Text
-                    style={styles.link}
-                    onPress={() =>
-                      Linking.openURL(establishment.googleReviewUrl)
-                    }>
-                    View on Google Maps
+      {/* View Modal */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '100%',
+              }}>
+              <Text style={styles.title}>Establishment Details</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Icon name="close-outline" size={24} color="red" />
+              </TouchableOpacity>
+            </View>
+            {selectedEstablishment && (
+              <>
+                <View style={{alignSelf: 'flex-start'}}>
+                  <Text style={styles.info}>
+                    Name: {selectedEstablishment.name}
                   </Text>
-                </Text>
-                <Text>Date: {establishment.date}</Text>
-              </View>
-            </View>
-          </View>
-        </Modal>
-
-        <Modal
-          visible={deleteModalVisible}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setDeleteModalVisible(false)}>
-          <View style={styles.modalContainer}>
-            <View style={[styles.modalContent, {width: '80%'}]}>
-              <Text style={styles.titleDelete}>Confirm Deletion</Text>
-              <Text style={{textAlign: 'center'}}>
-                Are you sure you want to delete this{'\n'} establishment?
-              </Text>
-              <View style={styles.modalActions}>
-                <Button
-                  title="Cancel"
-                  onPress={() => setDeleteModalVisible(false)}
+                  <Text style={styles.info}>
+                    Rating: {selectedEstablishment.business_rating}
+                  </Text>
+                  <Text style={styles.info}>
+                    Email: {selectedEstablishment.email}
+                  </Text>
+                </View>
+                <Image
+                  source={{uri: selectedEstablishment.logo}}
+                  style={styles.modalBanner}
                 />
-                <Button title="Delete" onPress={handleDelete} color="red" />
-              </View>
+                <View style={{alignSelf: 'flex-start'}}>
+                  <Text style={styles.info}>
+                    Location:{' '}
+                    <Text
+                      style={styles.link}
+                      onPress={() =>
+                        Linking.openURL(selectedEstablishment.url)
+                      }>
+                      View on Google Maps
+                    </Text>
+                  </Text>
+                  <Text style={styles.info}>
+                    Date:{' '}
+                    {new Date(selectedEstablishment.created_at).toDateString()}
+                  </Text>
+                </View>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
+
+      {/* Delete Modal */}
+      <Modal
+        visible={deleteModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setDeleteModalVisible(false)}>
+        <View style={styles.modalContainer}>
+          <View
+            style={[styles.modalContent, {width: '80%', alignItems: 'center'}]}>
+            <Text style={styles.titleDelete}>Confirm Deletion</Text>
+            <Text style={[styles.generatedBy, , {textAlign: 'center'}]}>
+              Are you sure you want to delete this{'\n'} establishment?
+            </Text>
+            <View style={styles.modalActions}>
+              <Button
+                title="Cancel"
+                onPress={() => setDeleteModalVisible(false)}
+              />
+              <Button title="Delete" onPress={handleApiDelete} color="red" />
             </View>
           </View>
-        </Modal>
-      </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: {flex: 1},
   headerStyle: {
     paddingLeft: 18,
     backgroundColor: color.secondaryBG,
@@ -171,30 +206,34 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginHorizontal: 20,
   },
-  infoSection: {flex: 1, justifyContent: 'center', marginLeft: 12},
+  imageCard: {
+    backgroundColor: color.white,
+    borderRadius: 8,
+    elevation: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  infoSection: {flex: 1, justifyContent: 'center', marginLeft: 15},
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    flex: 1,
     lineHeight: 22,
     color: color.primaryText,
   },
-  titleDelete: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    lineHeight: 22,
-    color: color.secondaryTexts,
-  },
-
-  emaiStyle: {fontSize: 14, lineHeight: 18, color: '#555', flex: 1},
+  emaiStyle: {fontSize: 14, lineHeight: 18, color: '#555'},
   generatedBy: {
     fontSize: 14,
     lineHeight: 18,
     color: '#555',
-    flex: 1,
-    marginTop: 5,
+    marginTop: 4,
   },
-  actionButtons: {flexDirection: 'row', marginTop: 8, gap: 12},
+  location: {
+    fontSize: 14,
+    lineHeight: 18,
+    color: '#777',
+    marginTop: 4,
+  },
+  actionButtons: {flexDirection: 'row', marginTop: 10, gap: 12},
   iconButton: {padding: 4},
   banner: {width: 100, height: 100, borderRadius: 8},
   modalContainer: {
@@ -207,10 +246,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     width: '90%',
   },
-  modalActions: {flexDirection: 'row', gap: 25, marginTop: 15},
+  modalActions: {
+    flexDirection: 'row',
+    gap: 25,
+    marginTop: 15,
+    alignSelf: 'center',
+  },
   modalBanner: {
     width: '100%',
     height: 200,
@@ -218,6 +262,18 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   link: {color: '#007BFF', textDecorationLine: 'underline'},
+  titleDelete: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    lineHeight: 22,
+    color: color.secondaryTexts,
+    textAlign: 'center',
+  },
+  info: {
+    fontSize: 15,
+    marginVertical: 2,
+    color: '#333',
+  },
 });
 
 export default EstablishmentList;
